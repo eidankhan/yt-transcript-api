@@ -4,44 +4,45 @@ import os
 class TranscriptService:
 
     def get_transcript_with_ytdlp(self, video_id: str, language: str = "en", subtitle_format: str = "vtt") -> dict:
-        url = f"https://www.youtube.com/watch?v={video_id}"
-        output_path = f"/tmp/{video_id}.%(ext)s"
+    import os
+    from yt_dlp import YoutubeDL
 
-        ydl_opts = {
-            'skip_download': True,
-            'writeautomaticsub': True,
-            'subtitleslangs': [language],
-            'subtitlesformat': subtitle_format,
-            'outtmpl': output_path,
-            'quiet': True
+    url = f"https://www.youtube.com/watch?v={video_id}"
+    output_path = f"/tmp/{video_id}.%(ext)s"
+
+    ydl_opts = {
+        'skip_download': True,
+        'writeautomaticsub': True,
+        'subtitleslangs': [language],
+        'subtitlesformat': subtitle_format,
+        'outtmpl': output_path,
+        'quiet': True,
+        'cookiefile': 'www.youtube.com_cookies.txt'  # ✅ Required to bypass CAPTCHA
+    }
+
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+
+        subtitle_file = f"/tmp/{video_id}.{language}.{subtitle_format}"
+
+        if not os.path.exists(subtitle_file):
+            raise ValueError(f"No transcript file found for language '{language}' in format '{subtitle_format}'.")
+
+        with open(subtitle_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        if subtitle_format == "srt":
+            clean_text = self._parse_srt(content)
+        else:
+            clean_text = self._parse_vtt(content)
+        return {
+            "transcript": clean_text,
+            "transcript_with_timestamps": content,
+            "metadata": self.get_video_metadata(video_id)
         }
-
-        try:
-            with YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-
-            subtitle_file = f"/tmp/{video_id}.{language}.{subtitle_format}"
-
-            if not os.path.exists(subtitle_file):
-                raise ValueError(f"No transcript file found for language '{language}' in format '{subtitle_format}'.")
-
-            with open(subtitle_file, 'r', encoding='utf-8') as f:
-                content = f.read()
-
-            if subtitle_format == "srt":
-                clean_text = self._parse_srt(content)
-            else:
-                clean_text = self._parse_vtt(content)
-
-            # Return dict with both clean and raw (with timestamps) transcripts
-            return {
-                "transcript": clean_text,
-                "transcript_with_timestamps": content,
-                "metadata": self.get_video_metadata(video_id)
-            }
-
-        except Exception as e:
-            raise ValueError(f"yt-dlp error: {str(e)}")
+    except Exception as e:
+        raise ValueError(f"yt-dlp error: {str(e)}")
 
     def _parse_srt(self, srt: str) -> str:
         lines = srt.splitlines()
