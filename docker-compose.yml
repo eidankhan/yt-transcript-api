@@ -1,0 +1,8 @@
+services:
+  flask-api:
+    build: .   # ← FIXED (was ./backend)
+    container_name: notemate-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app

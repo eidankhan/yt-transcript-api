@@ -1,0 +1,4 @@
+flask==2.3.3
+yt-dlp
+youtube-transcript-api
+flask-cors
