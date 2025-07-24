@@ -15,7 +15,7 @@ class TranscriptService:
             'subtitlesformat': subtitle_format,
             'outtmpl': output_path,
             'quiet': True,
-            'cookiefile': 'www.youtube.com_cookies.txt'  # ✅ Required to bypass CAPTCHA
+            'cookiefile': 'cookies.txt'  # ✅ Required to bypass CAPTCHA
         }
 
         try:

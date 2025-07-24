@@ -8,7 +8,7 @@ CORS(app)  # ✅ This enables CORS for all routes
 app.register_blueprint(transcript_bp)  # No need for url_prefix here anymore
 
 # Ensure the cookies file is in the correct location
-print("cookies.txt exists:", os.path.exists('www.youtube.com_cookies.txt'))
+print("cookies.txt exists:", os.path.exists('cookies.txt'))
 
 @app.route("/")
 def home():
