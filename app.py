@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from controllers.transcript_controller import transcript_bp
+import os
 
 app = Flask(__name__)
 CORS(app)  # ✅ This enables CORS for all routes
