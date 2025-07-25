@@ -1,7 +1,32 @@
 from yt_dlp import YoutubeDL
+from youtube_transcript_api import YouTubeTranscriptApi
 import os
 
 class TranscriptService:
+
+    def get_transcript_with_youtube_transcript_api(self, video_id: str, language: str = "en") -> dict:
+        """
+        Use the YouTube Transcript API to get the transcript of a video. Return the cleaned transcript as string,
+        and the raw transcript as a list of dictionaries with timestamps, duration, and text.
+
+        The method does not use the yt-dlp library, but the YouTube Transcript API. Correspondingly, the method does not have access to the video metadata.
+        """
+        try:
+            api = YouTubeTranscriptApi()
+            transcript = api.fetch(video_id, languages=[language])
+            raw_transcript = transcript.to_raw_data()
+
+            cleaned_transcript = '\n'.join([item['text'] for item in raw_transcript])  # `cleaned_transcript` looks like "Line1\nLine2..."
+
+            return {
+                'video_id': video_id, 
+                'language': language, 
+                'transcript': cleaned_transcript,
+                'transcript_with_timestamps': raw_transcript,
+            }
+            
+        except Exception as e:
+            raise ValueError(f"youtube_transcript_api error: {str(e)}")
 
     def get_transcript_with_ytdlp(self, video_id: str, language: str = "en", subtitle_format: str = "vtt") -> dict:
 
