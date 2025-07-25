@@ -1,4 +1,4 @@
 flask==2.3.3
 yt-dlp
-youtube-transcript-api
+youtube-transcript-api==1.2.1
 flask-cors

@@ -173,3 +173,73 @@ GET http://localhost:5000/transcript/OnLmDObu23Y?lang=en&format=srt
 > * The Dockerfile installs `ffmpeg`, required for yt-dlp to process subtitles.
 > * If subtitles are not available for the video or language, API returns a 400 error with a descriptive message.
 > * This API serves as a fallback method when other transcript fetching methods fail.
+
+## 🎯 New Feature: Transcript Fetching via `youtube-transcript-api`
+
+We now support extracting YouTube video transcripts using the [`youtube-transcript-api`](https://pypi.org/project/youtube-transcript-api/) library as a modern and stable fallback to `yt-dlp`. This allows us to retrieve captions without requiring cookies, browser emulation, or downloads.
+
+### ✅ Endpoint
+
+```
+GET /transcript/<video_id>
+```
+
+#### 🔄 Query Parameters
+
+* None (defaults to auto-detected English transcript)
+
+---
+
+### 📥 Sample Request
+
+```
+GET http://localhost:5000/transcript/vJefOB8kec8
+```
+
+### 📤 Sample JSON Response
+
+```json
+{
+  "video_id": "vJefOB8kec8",
+  "language": "English",
+  "language_code": "en",
+  "transcript": "Hello friends Welcome to AI Lets begin...",
+  "transcript_with_timestamps": "1\n00:00:00,000 --> 00:00:01,500\nHello, friends!\n\n2\n00:00:01,500 --> 00:00:03,000\nWelcome to AI.\n..."
+}
+```
+
+### 🧠 How It Works
+
+1. `YouTubeTranscriptApi().fetch(video_id)` fetches a list of subtitle snippets.
+2. The `transcript_utils.py` module:
+   * Converts each snippet into SRT-style timestamped blocks.
+   * Formats plain transcript by:
+     * Removing non-alphabetic characters (except `. ! ?`)
+     * Normalizing whitespace
+3. The API returns both:
+   * `"transcript"`: Clean text only (AI-ready)
+   * `"transcript_with_timestamps"`: Timestamped for SRT/subtitle usage
+### 🛠 Code Structure
+
+* `transcript_utils.py`
+
+  * `format_timestamp(seconds)`: Converts seconds to `HH:MM:SS,mmm`
+  * `format_transcript(transcript)`: Joins and sanitizes text
+
+* `TranscriptService.get_transcript(video_id)`
+
+  * Constructs and returns the final API response
+
+* `transcript_controller.py`
+
+  * Defines `GET /transcript/<video_id>` route and handles errors
+
+---
+
+### 📦 Dependencies
+
+Be sure `youtube-transcript-api` is listed in your `requirements.txt`:
+
+```
+youtube-transcript-api
+```
