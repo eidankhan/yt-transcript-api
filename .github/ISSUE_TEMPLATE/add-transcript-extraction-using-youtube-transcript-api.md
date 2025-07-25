@@ -4,7 +4,7 @@ about: This will serve as a lightweight alternative to `yt-dlp`, avoiding cookie
   issues.
 title: Add transcript extraction using youtube-transcript-api
 labels: enhancement, good first issue, help wanted
-assignees: ''
+assignees: eidankhan
 
 ---
 
