@@ -7,7 +7,7 @@ transcript_service = TranscriptService()
 @transcript_bp.route("/fallback/<video_id>", methods=["GET"])
 def get_transcript_fallback(video_id):
     language = request.args.get("lang", "en")
-    subtitle_format = request.args.get("format", "vtt")  # 'srt' or 'vtt'
+    subtitle_format = request.args.get("format", "srt")  # 'srt' or 'vtt'
 
     try:
         transcripts = transcript_service.get_transcript_with_youtubedlp(video_id, language, subtitle_format)

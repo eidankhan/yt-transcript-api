@@ -22,7 +22,7 @@ def format_transcript(transcript) -> str:
         return cleaned_text
 
 
-def get_transcript_with_ytdlp(video_id: str, language: str = "en", subtitle_format: str = "vtt") -> dict:
+def get_transcript_with_ytdlp(video_id: str, language: str = "en", subtitle_format: str = "srt") -> dict:
     url = f"https://www.youtube.com/watch?v={video_id}"
     output_path = f"/tmp/{video_id}.%(ext)s"
 

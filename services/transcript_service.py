@@ -27,7 +27,7 @@ class TranscriptService:
                 "transcript_with_timestamps": "\n".join(lines)
             }
 
-    def get_transcript_with_youtubedlp(self, video_id: str, language: str = "en", subtitle_format: str = "vtt") -> dict:
+    def get_transcript_with_youtubedlp(self, video_id: str, language: str = "en", subtitle_format: str = "srt") -> dict:
         existing = find_transcript(video_id)
         if existing:
             return existing
