@@ -6,3 +6,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/app
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"

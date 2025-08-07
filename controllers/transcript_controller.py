@@ -10,7 +10,7 @@ def get_transcript_fallback(video_id):
     subtitle_format = request.args.get("format", "vtt")  # 'srt' or 'vtt'
 
     try:
-        transcripts = transcript_service.get_transcript_with_ytdlp(video_id, language, subtitle_format)
+        transcripts = transcript_service.get_transcript_with_youtubedlp(video_id, language, subtitle_format)
         return jsonify({
             "video_id": video_id,
             "language": language,

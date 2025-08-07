@@ -243,3 +243,34 @@ Be sure `youtube-transcript-api` is listed in your `requirements.txt`:
 ```
 youtube-transcript-api
 ```
+
+
+## 🆕 MongoDB Integration
+
+### 📌 Why We Added It
+Previously, transcripts were fetched on-demand using `yt-dlp` or `youtube-transcript-api`, which meant:
+- Repeated API calls for the same video
+- No persistent storage for analytics or reuse
+- Slower response times for frequently accessed transcripts
+
+To solve this, we integrated MongoDB as a lightweight, flexible database to cache and persist transcripts.
+
+### 🛠 What It Does
+- Stores each transcript as a document in the `transcript_db.transcripts` collection.
+- Automatically checks the database before fetching from YouTube.
+- Saves transcripts with metadata including:
+  - `video_id`
+  - `language`
+  - `transcript` (clean text)
+  - `transcript_with_timestamps` (SRT/VTT format)
+  - `metadata` (title, uploader, duration, thumbnail)
+  - `source` (yt-dlp or youtube-transcript-api)
+  - `fetched_at` timestamp
+
+
+### ✅ Benefits
+- ⚡ **Faster API responses** for previously requested videos
+- 📊 **Persistent storage** for analytics, search, or export
+- 🔁 **Reduced load** on YouTube and transcript libraries
+- 🧩 **Modular architecture** for future enhancements like TTL caching, keyword search, or user tagging
+- 🧭 **MongoDB Compass support** for visual inspection and debugging
